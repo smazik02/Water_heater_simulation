@@ -1,4 +1,5 @@
 from math import sqrt
+import random
 from time import sleep
 
 CAPACITY = 50  # Pojemność bojlera [litr]
@@ -22,8 +23,8 @@ time = [0.0]  # Czas
 e = [0.0]  # Uchyb
 temp = [15.0]  # Temperatura wody
 volt = [0.0]  # Napięcie sterujące
-outFlow = [0.0]  # Dopływ wody
-inFlow = [0.0]  # Odpływ wody
+outFlow = [0.0]  # Dopływ wody m^3/s
+inFlow = [0.0]  # Odpływ wody m^s/s
 energy = [0.0]  # Energia rozgrzewania wody
 heaterPower = [0.0]  # Moc grzałki wody
 
@@ -32,8 +33,9 @@ N = int(totalTime/timeProbe) + 1
 
 def genOutFlow():
     global outFlow
-    outFlow = [0.0 for _ in range(N)]
-    # print(outFlow)
+    outFlow = [0.0 for _ in range(N+1)]
+    for i in range(10000, 11501):
+        outFlow[i] = 0.131666
 
 
 def voltage(en):
@@ -42,24 +44,18 @@ def voltage(en):
     return KP * (en + (timeProbe)/(TI) * sum(e) + (TD)/(timeProbe) * (volt[-1] - volt[-2]))
 
 
-def heatEnergy(un):
-    return ((ENERGY_MAX-ENERGY_MIN)*(un-VOLT_MIN))/(VOLT_MAX-VOLT_MIN) + ENERGY_MIN
-
-
-genOutFlow()
+# genOutFlow()
 
 for i in range(N):
     time.append(time[-1] + timeProbe)
+    outFlow.append(0.0)
+    inFlow.append(outFlow[-1])
     e.append(TEMP_SET - temp[-1])
     volt.append(min(VOLT_MAX, max(VOLT_MIN, voltage(e[-1]))))
-    energy.append(min(ENERGY_MAX, max(ENERGY_MIN, heatEnergy(volt[-1]))))
+    energy.append(ENERGY_MAX * (volt[-1]-VOLT_MIN)/(VOLT_MAX-VOLT_MIN))
     # print(energy[-1])
     heaterPower.append(energy[-1]/timeProbe)
-    inFlow.append(outFlow[i])
-    temp.append(temp[-1]*((1-outFlow[-1])/CAPACITY) +
-                TEMP_IN * (inFlow[-1]/CAPACITY) +
-                (energy[-1]/10)/(CV*CAPACITY))
-    print(temp[-1]*((1-outFlow[-1])/CAPACITY) +
-          TEMP_IN * (inFlow[-1]/CAPACITY))
-    print((heaterPower[-1]/10)/(CV*CAPACITY))
-    sleep(1)
+    temp.append(temp[-1] * ((CAPACITY-outFlow[-1]*timeProbe)/CAPACITY) +
+                TEMP_IN * (inFlow[-1]*timeProbe/CAPACITY) +
+                (energy[-1])/(CV*CAPACITY))
+    # print(temp[-1]*((CAPACITY-outFlow[-1])/CAPACITY) + TEMP_IN * (inFlow[-1]/CAPACITY))
