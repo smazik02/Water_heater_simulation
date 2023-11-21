@@ -16,6 +16,12 @@ voltChart = px.line(x=sim.time,
 powerChart = px.line(x=sim.time,
                      y=sim.heaterPower,
                      title='Heater power')
+inFlowChart = px.line(x=sim.time,
+                      y=sim.inFlow,
+                      title='InFlow')
+eChart = px.line(x=sim.time,
+                 y=sim.e,
+                 title='Uchyb')
 
 app.layout = html.Div(children=[
     html.H1(children='Hello Dash'),
@@ -33,6 +39,14 @@ app.layout = html.Div(children=[
     dcc.Graph(
         id='power',
         figure=powerChart
+    ),
+    dcc.Graph(
+        id='imflow',
+        figure=inFlowChart
+    ),
+    dcc.Graph(
+        id='uchyb',
+        figure=eChart
     )
 ])
 
