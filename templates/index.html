@@ -2,12 +2,27 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<title>Homepage</title>
+		<link rel="stylesheet" href="style.css">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+		<script src="script.js"></script>
+		<title>Main dash</title>
 	</head>
 	<body>
-		<h1>Homepage</h1>
-		{% for i in range(10) %} {% if i%2 == 0 %}
-		<p>{{content}}</p>
-		{% endif %} {% endfor %}
-	</body>
+		<div id="header">
+			<h1>Water heater simulation</h1>
+		</div>
+		<div id="config">
+			<p>Set simulation parameters</p>
+			<form name="startForm" action="startSim()">
+				<label for="simulationTime">Simulation time: [s]</label><br>
+				<input type="number" value="3600" name="simulationTime" id="simulationTime"><br>
+				<label for="heaterPower">Heater power: [W]</label><br>
+				<input type="number" value="1500" name="heaterPower" id="heaterPower"><br>
+				<label for="waterCapacity">Water capacity: [l/kg]</label><br>
+				<input type="number" value="50" name="waterCapacity" id="waterCapacity"><br>
+				<input type="submit" value="Submit">
+			</form>
+		</div>
+		<div id="graphs"></div>
 </html>

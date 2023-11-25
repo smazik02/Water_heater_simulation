@@ -1,0 +1,14 @@
+body {
+	font-family: Verdana, Geneva, Tahoma, sans-serif;
+	background-color: #ffffff;
+}
+
+div {
+	background-color: #ffffff;
+}
+
+#header {
+	padding: 10px 16px;
+	color: #ebdede;
+	background: #bb2828;
+}

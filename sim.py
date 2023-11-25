@@ -45,18 +45,28 @@ def voltage(en):
     return KP * (en + TD/timeProbe * (volt[-1] - volt[-2]))
 
 
-genOutFlow()
+def main(simTime=totalTime, power=ENERGY_MAX, waterCap=CAPACITY):
+    global totalTime, ENERGY_MAX, CAPACITY
+    totalTime = simTime
+    ENERGY_MAX = power
+    CAPACITY = waterCap
 
-for i in range(N):
-    time.append(time[-1] + timeProbe)
-    # outFlow.append(0.0)
-    inFlow.append(outFlow[i])
-    e.append(TEMP_SET - temp[-1])
-    volt.append(min(VOLT_MAX, max(VOLT_MIN, voltage(e[-1]))))
-    energy.append(ENERGY_MAX * (volt[-1]-VOLT_MIN)/(VOLT_MAX-VOLT_MIN))
-    # print(energy[-1])
-    heaterPower.append(energy[-1]/timeProbe)
-    temp.append(temp[-1] * ((CAPACITY-outFlow[i]*timeProbe)/CAPACITY) +
-                TEMP_IN * (inFlow[-1]*timeProbe/CAPACITY) +
-                (energy[-1])/(CV*CAPACITY))
-    # print(temp[-1]*((CAPACITY-outFlow[-1])/CAPACITY) + TEMP_IN * (inFlow[-1]/CAPACITY))
+    genOutFlow()
+
+    for i in range(N):
+        time.append(time[-1] + timeProbe)
+        # outFlow.append(0.0)
+        inFlow.append(outFlow[i])
+        e.append(TEMP_SET - temp[-1])
+        volt.append(min(VOLT_MAX, max(VOLT_MIN, voltage(e[-1]))))
+        energy.append(ENERGY_MAX * (volt[-1]-VOLT_MIN)/(VOLT_MAX-VOLT_MIN))
+        # print(energy[-1])
+        heaterPower.append(energy[-1]/timeProbe)
+        temp.append(temp[-1] * ((CAPACITY-outFlow[i]*timeProbe)/CAPACITY) +
+                    TEMP_IN * (inFlow[-1]*timeProbe/CAPACITY) +
+                    (energy[-1])/(CV*CAPACITY))
+        # print(temp[-1]*((CAPACITY-outFlow[-1])/CAPACITY) + TEMP_IN * (inFlow[-1]/CAPACITY))
+
+
+if __name__ == "__main__":
+    main()

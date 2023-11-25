@@ -1,25 +1,41 @@
 from flask import Flask, redirect, url_for, render_template, request
 import plotly.express as px
-# import sim
+import sim
 import pandas as pd
 
 # app = dash.Dash(__name__)
 app = Flask(__name__)
 
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def home():
-    return render_template("index.html", content="Hello")
+    if request.method == "GET":
+        return render_template("index.html")
 
 
-@app.route("/<name>")
-def user(name):
-    return render_template("index.html", content=name)
+@app.route("/start", methods=["POST"])
+def start():
+    if request.method == "POST":
+        sim.main()
+        pass
 
 
-@app.route("/admin")
-def admin():
-    return redirect(url_for("home"))
+# @app.route("/<name>")
+# def user(name):
+#     return render_template("index.html")
+
+
+# @app.route("/login", methods=["POST", "GET"])
+# def login():
+#     if request.method == "GET":
+#         return render_template("index.html")
+#     else:
+#         return "Hi"
+
+
+# @app.route("/admin")
+# def admin():
+#     return redirect(url_for("home"))
 
 
 if __name__ == '__main__':
