@@ -30,13 +30,14 @@ heaterPower = [0.0]  # Moc grzałki wody
 N = int(totalTime/timeProbe) + 1
 
 
-def genOutFlow():
-    global outFlow
+def genOutFlow(simTime=totalTime):
+    global outFlow, totalTime
+    N = int(int(simTime)/timeProbe) + 1
     outFlow = [0.0 for _ in range(N+1)]
-    for i in range(10000, 10000 + 5*60*10):
+    for i in range(x := int((10000/totalTime) * simTime), x + 5*60*10):
         outFlow[i] = 0.131666
-    for i in range(15000, 15000 + 60*10):
-        outFlow[i] = 0.131666
+    for i in range(x := int((15000/totalTime) * simTime), x + 60*10):
+        outFlow[i] = 0.131666/2
 
 
 def voltage(en):
@@ -45,27 +46,25 @@ def voltage(en):
     return KP * (en + TD/timeProbe * (volt[-1] - volt[-2]))
 
 
-def main(simTime=totalTime, power=ENERGY_MAX, waterCap=CAPACITY):
-    global totalTime, ENERGY_MAX, CAPACITY
-    totalTime = simTime
-    ENERGY_MAX = power
-    CAPACITY = waterCap
+async def main(simTime=totalTime, power=ENERGY_MAX, waterCap=CAPACITY):
+    global totalTime, ENERGY_MAX, CAPACITY, N
+    totalTime = int(simTime)
+    ENERGY_MAX = int(power)
+    CAPACITY = int(waterCap)
+    N = int(totalTime/timeProbe) + 1
 
-    genOutFlow()
+    genOutFlow(N)
 
     for i in range(N):
         time.append(time[-1] + timeProbe)
-        # outFlow.append(0.0)
         inFlow.append(outFlow[i])
         e.append(TEMP_SET - temp[-1])
         volt.append(min(VOLT_MAX, max(VOLT_MIN, voltage(e[-1]))))
         energy.append(ENERGY_MAX * (volt[-1]-VOLT_MIN)/(VOLT_MAX-VOLT_MIN))
-        # print(energy[-1])
         heaterPower.append(energy[-1]/timeProbe)
         temp.append(temp[-1] * ((CAPACITY-outFlow[i]*timeProbe)/CAPACITY) +
                     TEMP_IN * (inFlow[-1]*timeProbe/CAPACITY) +
                     (energy[-1])/(CV*CAPACITY))
-        # print(temp[-1]*((CAPACITY-outFlow[-1])/CAPACITY) + TEMP_IN * (inFlow[-1]/CAPACITY))
 
 
 if __name__ == "__main__":

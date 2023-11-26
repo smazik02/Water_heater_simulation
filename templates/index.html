@@ -2,11 +2,141 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<link rel="stylesheet" href="style.css">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="stylesheet" href="../static/styles/style.css" />
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-		<script src="script.js"></script>
-		<title>Main dash</title>
+		<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+		<script>
+			const submitButton = document.getElementById('submitButton');
+
+			const toggleDiv = (id) => {
+				const x = document.getElementById(id);
+				if (x.style.display === 'none') {
+					x.style.display = 'block';
+				} else {
+					x.style.display = 'none';
+				}
+			};
+
+			const startSim = () => {
+				const time = document.getElementById('simulationTime').value;
+				const power = document.getElementById('heaterPower').value;
+				const capacity = document.getElementById('waterCapacity').value;
+				const checkDiv = document.getElementById('check');
+
+				axios
+					.post(
+						'http://localhost:5000/start',
+						{
+							simTime: time,
+							power: power,
+							waterCap: capacity,
+						},
+						{
+							headers: {
+								'Content-Type': 'application/json',
+							},
+						}
+					)
+					.then((response) => {
+						genGraphs(response['data']);
+						checkDiv.style.display = 'block';
+					})
+					.catch((error) => {
+						console.error(error);
+					});
+			};
+
+			const genGraphs = (data) => {
+				const time = data['time'];
+
+				const temp = data['temp'];
+				let graphData = [
+					{
+						x: time,
+						y: temp,
+						mode: 'lines',
+					},
+				];
+				let layout = [
+					{
+						xaxis: { title: 'Time' },
+						yaxis: { title: 'Temperature' },
+						title: 'Water temperature',
+					},
+				];
+				Plotly.newPlot('tempGraph', graphData, layout);
+
+				const volt = data['volt'];
+				graphData = [
+					{
+						x: time,
+						y: volt,
+						mode: 'lines',
+					},
+				];
+				layout = [
+					{
+						xaxis: { title: 'Time' },
+						yaxis: { title: 'Voltage' },
+						title: 'Regulator voltage',
+					},
+				];
+				Plotly.newPlot('voltGraph', graphData, layout);
+
+				const power = data['power'];
+				graphData = [
+					{
+						x: time,
+						y: power,
+						mode: 'lines',
+					},
+				];
+				layout = [
+					{
+						xaxis: { title: 'Time' },
+						yaxis: { title: 'Power' },
+						title: 'Heater power',
+					},
+				];
+				Plotly.newPlot('powerGraph', graphData, layout);
+
+				const flow = data['outFlow'];
+				graphData = [
+					{
+						x: time,
+						y: flow,
+						mode: 'lines',
+					},
+				];
+				layout = [
+					{
+						xaxis: { title: 'Time' },
+						yaxis: { title: 'Flow' },
+						title: 'Water flow',
+					},
+				];
+				Plotly.newPlot('flowGraph', graphData, layout);
+
+				const e = data['e'];
+				graphData = [
+					{
+						x: time,
+						y: e,
+						mode: 'lines',
+					},
+				];
+				layout = [
+					{
+						xaxis: { title: 'Time' },
+						yaxis: { title: 'E' },
+						title: 'E',
+					},
+				];
+				Plotly.newPlot('eGraph', graphData, layout);
+			};
+		</script>
+		<title>Water heater simulator</title>
 	</head>
 	<body>
 		<div id="header">
@@ -14,15 +144,83 @@
 		</div>
 		<div id="config">
 			<p>Set simulation parameters</p>
-			<form name="startForm" action="startSim()">
-				<label for="simulationTime">Simulation time: [s]</label><br>
-				<input type="number" value="3600" name="simulationTime" id="simulationTime"><br>
-				<label for="heaterPower">Heater power: [W]</label><br>
-				<input type="number" value="1500" name="heaterPower" id="heaterPower"><br>
-				<label for="waterCapacity">Water capacity: [l/kg]</label><br>
-				<input type="number" value="50" name="waterCapacity" id="waterCapacity"><br>
-				<input type="submit" value="Submit">
+			<form name="startForm">
+				<label for="simulationTime">Simulation time: [s]</label><br />
+				<input
+					type="number"
+					value="3600"
+					name="simulationTime"
+					id="simulationTime"
+				/><br />
+				<label for="heaterPower">Heater power: [W]</label><br />
+				<input
+					type="number"
+					value="1500"
+					name="heaterPower"
+					id="heaterPower"
+				/><br />
+				<label for="waterCapacity">Water capacity: [l/kg]</label><br />
+				<input
+					type="number"
+					value="50"
+					name="waterCapacity"
+					id="waterCapacity"
+				/><br />
+				<button type="button" onclick="startSim()">Submit</button>
 			</form>
 		</div>
-		<div id="graphs"></div>
+		<div id="check" style="display: none">
+			<h3>Choose which graphs you want to see:</h3>
+			<input
+				type="checkbox"
+				checked
+				name="tempBox"
+				id="tempBox"
+				value="Temperature"
+				onchange="toggleDiv('tempGraph')"
+			/>
+			<label for="tempBox">Water temperature graph</label><br />
+			<input
+				type="checkbox"
+				checked
+				name="voltBox"
+				id="voltBox"
+				value="Voltage"
+				onchange="toggleDiv('voltGraph')"
+			/>
+			<label for="voltBox">Voltage graph</label><br />
+			<input
+				type="checkbox"
+				checked
+				name="powerBox"
+				id="powerBox"
+				value="Power"
+				onchange="toggleDiv('powerGraph')"
+			/>
+			<label for="powerBox">Heater power graph</label><br />
+			<input
+				type="checkbox"
+				checked
+				name="flowBox"
+				id="flowBox"
+				value="Water flow"
+				onchange="toggleDiv('flowGraph')"
+			/>
+			<label for="flowBox">Water flow graph</label><br />
+			<input
+				type="checkbox"
+				checked
+				name="eBox"
+				id="eBox"
+				value="E"
+				onchange="toggleDiv('eGraph')"
+			/>
+			<label for="eBox">E graph</label><br />
+		</div>
+		<div class="graphs" id="tempGraph"></div>
+		<div class="graphs" id="voltGraph"></div>
+		<div class="graphs" id="powerGraph"></div>
+		<div class="graphs" id="flowGraph"></div>
+		<div class="graphs" id="eGraph"></div>
+	</body>
 </html>
