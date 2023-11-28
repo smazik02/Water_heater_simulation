@@ -19,7 +19,7 @@ async def start():
         if request.headers.get("Content-Type") != "application/json":
             return 'Content type not supported'
         json = request.json
-        await sim.main(json["simTime"], json["power"], json["waterCap"])
+        await sim.main(int(json["simTime"]), int(json["power"]), int(json["waterCap"]), float(json["temp"]))
         return {"time": sim.time, "outFlow": sim.outFlow, "e": sim.e, "volt": sim.volt, "heaterPower": sim.heaterPower, "temp": sim.temp}
 
 

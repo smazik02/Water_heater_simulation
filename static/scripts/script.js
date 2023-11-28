@@ -13,6 +13,7 @@ const startSim = () => {
 	const time = document.getElementById('simulationTime').value;
 	const power = document.getElementById('heaterPower').value;
 	const capacity = document.getElementById('waterCapacity').value;
+	const temp = document.getElementById('tempSet').value;
 	const checkDiv = document.getElementById('check');
 
 	axios
@@ -22,6 +23,7 @@ const startSim = () => {
 				simTime: time,
 				power: power,
 				waterCap: capacity,
+				temp: temp,
 			},
 			{
 				headers: {
@@ -75,7 +77,7 @@ const genGraphs = (data) => {
 	];
 	Plotly.newPlot('voltGraph', graphData, layout);
 
-	const power = data['power'];
+	const power = data['heaterPower'];
 	graphData = [
 		{
 			x: time,
