@@ -20,7 +20,7 @@ async def start():
             return 'Content type not supported'
         json = request.json
         await sim.main(int(json["simTime"]), int(json["power"]), int(json["waterCap"]), float(json["temp"]))
-        return {"time": sim.time, "outFlow": sim.outFlow, "e": sim.e, "volt": sim.volt, "heaterPower": sim.heaterPower, "temp": sim.temp}
+        return {"time": sim.time, "outFlow": sim.waterFlow, "e": sim.e, "volt": sim.volt, "heaterPower": sim.heaterPower, "temp": sim.temp}
 
 
 # @app.route("/<name>")
