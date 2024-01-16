@@ -1,42 +1,33 @@
-from math import sin, cos
-
 VOLT_MIN = 0
 VOLT_MAX = 10
 CV = 4180  # ciepło właściwe wody, J * 1/kg * 1/K
 RHO = 1000  # gęstość wody 1000 kg/m^3
 
-KP = 1  # Wzmocnienie regulatora
-TI = 5000  # Czas zdwojenia
-TD = 0.06  # Czas wyprzedzenia
+KP = 0.8  # Wzmocnienie regulatora
+TI = 1800  # Czas zdwojenia
+TD = 0  # Czas wyprzedzenia
 
 timeProbe = 0.1  # Okres czasu próbkowania [s]
 
 integer = 0  # Dla skrócenia obliczeń całkowania
 
 
-def genOutFlowZero(n, totalTime):  # Wersja z zerowym
-    outFlow = [0.0 for _ in range(n+1)]
-    for i in range(x := int(1000 * (totalTime/3600) / timeProbe), x + 5*60*10):
-        outFlow[i] = 3.33e-5
-    for i in range(x := int(1500 * (totalTime/3600) / timeProbe), x + 60*10):
-        outFlow[i] = 3.33e-5/2
-    return outFlow
-
-
 def genOutFlowConst(n, totalTime):  # Wersja stała:
-    outFlow = [3.33e-6 for _ in range(n)]
+    outFlow = [0.0001083333 for _ in range(n)]
     return outFlow
 
 
 def genOutFlowStep(n, totalTime):  # Wersja ze stopniem:
-    outFlow = [3.33e-6 for _ in range(n//2+1)] + \
-        [6.66e-6 for _ in range(n//2+1, n)]
+    outFlow = [0.0000833333 for _ in range(n//3+1)] + \
+        [0.00015 for _ in range(n//3+1, 2*n//3+1)] + \
+        [0.0000833333 for _ in range(2*n//3+1, n)]
     return outFlow
 
 
-def genOutFlowCos(n, totalTime):  # Wersja sinusoida
-    outFlow = [cos(i/10000)*(3.33e-6/2) + (3.33e-6/2) for i in range(n)]
-    return outFlow
+# def genOutFlowStep(n, totalTime):  # Wersja ze stopniem:
+#     outFlow = [0.00015 for _ in range(n//2+1)] + \
+#         [0.0000833333 for _ in range(n//2+1, n)]
+#     return outFlow
 
 
 def P(en, kp):
@@ -63,25 +54,23 @@ def PID(en, kp, ti, td):
     return kp * (en + (timeProbe)/(ti) * integer + (td)/(timeProbe) * (volt[-1] - volt[-2]))
 
 
-async def main(totalTime=36000, powerMax=15000, litreVolume=50, tempSet=45):
+async def main(totalTime, powerMax, litreVolume, tempSet):
     global time, e, temp, volt, waterFlow, heaterPower, integer
     integer = 0
 
-    TEMP_IN = 15  # Temperatura zimnej wody w kranie
+    TEMP_IN = 10  # Temperatura zimnej wody w kranie
     volume = litreVolume/1000  # Pojemność z litrów na m^3
 
     time = [0.0]  # Czas
     e = [0.0]  # Uchyb
-    temp = [15.0]  # Temperatura wody
+    temp = [10.0]  # Temperatura wody
     volt = [0.0]  # Napięcie sterujące
     heaterPower = [0.0]  # Moc grzałki wody
 
     N = int(totalTime/timeProbe) + 1
 
-    # waterFlow = genOutFlowZero(N, totalTime)  # Przepływ wody m^3/s
     # waterFlow = genOutFlowConst(N, totalTime)  # Przepływ wody m^3/s
-    # waterFlow = genOutFlowStep(N, totalTime)  # Przepływ wody m^3/s
-    waterFlow = genOutFlowCos(N, totalTime)  # Przepływ wody m^3/s
+    waterFlow = genOutFlowStep(N, totalTime)  # Przepływ wody m^3/s
 
     for i in range(N):
         time.append(time[-1] + timeProbe)
