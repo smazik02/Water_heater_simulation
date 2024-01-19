@@ -10,9 +10,7 @@ const toggleDiv = (id) => {
 };
 
 const startSim = () => {
-	const time = document.getElementById('simulationTime').value;
 	const power = document.getElementById('heaterPower').value;
-	const capacity = document.getElementById('waterCapacity').value;
 	const temp = document.getElementById('tempSet').value;
 	const checkDiv = document.getElementById('check');
 
@@ -20,9 +18,7 @@ const startSim = () => {
 		.post(
 			'http://localhost:5000/start',
 			{
-				simTime: time,
 				power: power,
-				waterCap: capacity,
 				temp: temp,
 			},
 			{
@@ -60,23 +56,6 @@ const genGraphs = (data) => {
 	];
 	Plotly.newPlot('tempGraph', graphData, layout);
 
-	const volt = data['volt'];
-	graphData = [
-		{
-			x: time,
-			y: volt,
-			mode: 'lines',
-		},
-	];
-	layout = [
-		{
-			xaxis: { title: 'Time' },
-			yaxis: { title: 'Voltage' },
-			title: 'Regulator voltage',
-		},
-	];
-	Plotly.newPlot('voltGraph', graphData, layout);
-
 	const power = data['heaterPower'];
 	graphData = [
 		{
@@ -110,21 +89,4 @@ const genGraphs = (data) => {
 		},
 	];
 	Plotly.newPlot('flowGraph', graphData, layout);
-
-	const e = data['e'];
-	graphData = [
-		{
-			x: time,
-			y: e,
-			mode: 'lines',
-		},
-	];
-	layout = [
-		{
-			xaxis: { title: 'Time' },
-			yaxis: { title: 'E' },
-			title: 'E',
-		},
-	];
-	Plotly.newPlot('eGraph', graphData, layout);
 };

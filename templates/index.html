@@ -16,26 +16,12 @@
 		<div id="config">
 			<p>Set simulation parameters</p>
 			<form name="startForm">
-				<label for="simulationTime">Simulation time: [s]</label><br />
-				<input
-					type="number"
-					value="3600"
-					name="simulationTime"
-					id="simulationTime"
-				/><br />
 				<label for="heaterPower">Heater power: [W]</label><br />
 				<input
 					type="number"
 					value="15000"
 					name="heaterPower"
 					id="heaterPower"
-				/><br />
-				<label for="waterCapacity">Water capacity: [l/kg]</label><br />
-				<input
-					type="number"
-					value="2"
-					name="waterCapacity"
-					id="waterCapacity"
 				/><br />
 				<label for="temperatureSet">Water temperature: [°C]</label
 				><br />
@@ -86,20 +72,10 @@
 				onchange="toggleDiv('flowGraph')"
 			/>
 			<label for="flowBox">Water flow graph</label><br />
-			<input
-				type="checkbox"
-				checked
-				name="eBox"
-				id="eBox"
-				value="E"
-				onchange="toggleDiv('eGraph')"
-			/>
-			<label for="eBox">E graph</label><br />
 		</div>
 		<div class="graphs" id="tempGraph"></div>
 		<div class="graphs" id="voltGraph"></div>
 		<div class="graphs" id="powerGraph"></div>
 		<div class="graphs" id="flowGraph"></div>
-		<div class="graphs" id="eGraph"></div>
 	</body>
 </html>
