@@ -1,4 +1,7 @@
 const submitButton = document.getElementById('submitButton');
+const tempSlider = document.getElementById('tempRange');
+const tempLabel = document.getElementById('tempLabel');
+tempLabel.innerHTML = tempSlider.value + ' °C';
 
 const toggleDiv = (id) => {
 	const x = document.getElementById(id);
@@ -9,16 +12,18 @@ const toggleDiv = (id) => {
 	}
 };
 
+tempSlider.oninput = () => {
+	tempLabel.innerHTML = tempSlider.value + ' °C';
+};
+
 const startSim = () => {
-	const power = document.getElementById('heaterPower').value;
-	const temp = document.getElementById('tempSet').value;
+	const temp = tempSlider.value;
 	const checkDiv = document.getElementById('check');
 
 	axios
 		.post(
 			'http://localhost:5000/start',
 			{
-				power: power,
 				temp: temp,
 			},
 			{
@@ -38,6 +43,9 @@ const startSim = () => {
 
 const genGraphs = (data) => {
 	const time = data['time'];
+	const config = {
+		responsive: true,
+	};
 
 	const temp = data['temp'];
 	let graphData = [
@@ -47,14 +55,22 @@ const genGraphs = (data) => {
 			mode: 'lines',
 		},
 	];
-	let layout = [
-		{
-			xaxis: { title: 'Time' },
-			yaxis: { title: 'Temperature' },
-			title: 'Water temperature',
+	let layout = {
+		title: {
+			text: 'Water temperature',
+			font: {
+				size: 22,
+			},
 		},
-	];
-	Plotly.newPlot('tempGraph', graphData, layout);
+		xaxis: {
+			title: 'Time [s]',
+			dtick: 60,
+		},
+		yaxis: {
+			title: 'Temperature [°C]',
+		},
+	};
+	Plotly.newPlot('tempGraph', graphData, layout, config);
 
 	const power = data['heaterPower'];
 	graphData = [
@@ -64,14 +80,24 @@ const genGraphs = (data) => {
 			mode: 'lines',
 		},
 	];
-	layout = [
-		{
-			xaxis: { title: 'Time' },
-			yaxis: { title: 'Power' },
-			title: 'Heater power',
+	layout = {
+		title: {
+			text: 'Heater power',
+			font: {
+				size: 22,
+			},
 		},
-	];
-	Plotly.newPlot('powerGraph', graphData, layout);
+		xaxis: {
+			title: 'Time [s]',
+			dtick: 60,
+		},
+		yaxis: {
+			title: 'Power [W]',
+			dtick: 6000,
+			tickformat: ',.0f',
+		},
+	};
+	Plotly.newPlot('powerGraph', graphData, layout, config);
 
 	const flow = data['outFlow'];
 	graphData = [
@@ -81,12 +107,20 @@ const genGraphs = (data) => {
 			mode: 'lines',
 		},
 	];
-	layout = [
-		{
-			xaxis: { title: 'Time' },
-			yaxis: { title: 'Flow' },
-			title: 'Water flow',
+	layout = {
+		title: {
+			text: 'Water flow',
+			font: {
+				size: 22,
+			},
 		},
-	];
-	Plotly.newPlot('flowGraph', graphData, layout);
+		xaxis: {
+			title: 'Time [s]',
+			dtick: 60,
+		},
+		yaxis: {
+			title: 'Flow [l/min]',
+		},
+	};
+	Plotly.newPlot('flowGraph', graphData, layout, config);
 };

@@ -7,6 +7,10 @@ div {
 	background-color: #ffffff;
 }
 
+#config {
+	padding: 10px;
+}
+
 #header {
 	padding: 10px 16px;
 	color: #ebdede;

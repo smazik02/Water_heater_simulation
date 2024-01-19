@@ -6,31 +6,36 @@
 		<link rel="stylesheet" href="../static/styles/style.css" />
 		<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 		<script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-		<script src="../static/scripts/script.js"></script>
 		<title>Water heater simulator</title>
 	</head>
 	<body>
 		<div id="header">
 			<h1>Water heater simulation</h1>
+			<h3>Technical data:</h3>
+			<ul>
+				<li><b>Power:</b> 18000 W</li>
+				<li><b>Maximum water temperature:</b> 55 °C</li>
+				<li><b>Maximum water flow:</b> 8 l/min</li>
+				<li><b>Max. water flow at 55 °C setting:</b> 5.8 l/min</li>
+			</ul>
 		</div>
 		<div id="config">
-			<p>Set simulation parameters</p>
 			<form name="startForm">
-				<label for="heaterPower">Heater power: [W]</label><br />
-				<input
-					type="number"
-					value="15000"
-					name="heaterPower"
-					id="heaterPower"
-				/><br />
-				<label for="temperatureSet">Water temperature: [°C]</label
+				<label for="temperatureSlider">Water temperature: [°C]</label
 				><br />
 				<input
-					type="number"
+					type="range"
+					min="10"
+					,
+					max="55"
+					,
 					value="45"
-					name="tempSet"
-					id="tempSet"
-				/><br />
+					,
+					name="temperatureSlider"
+					,
+					id="tempRange"
+				/>
+				<label id="tempLabel"></label><br />
 				<button type="button" onclick="startSim()">Submit</button>
 			</form>
 		</div>
@@ -53,15 +58,6 @@
 				value="Voltage"
 				onchange="toggleDiv('voltGraph')"
 			/>
-			<label for="voltBox">Voltage graph</label><br />
-			<input
-				type="checkbox"
-				checked
-				name="powerBox"
-				id="powerBox"
-				value="Power"
-				onchange="toggleDiv('powerGraph')"
-			/>
 			<label for="powerBox">Heater power graph</label><br />
 			<input
 				type="checkbox"
@@ -74,8 +70,8 @@
 			<label for="flowBox">Water flow graph</label><br />
 		</div>
 		<div class="graphs" id="tempGraph"></div>
-		<div class="graphs" id="voltGraph"></div>
 		<div class="graphs" id="powerGraph"></div>
 		<div class="graphs" id="flowGraph"></div>
+		<script src="../static/scripts/script.js"></script>
 	</body>
 </html>
