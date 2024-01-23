@@ -26,16 +26,20 @@
 				<input
 					type="range"
 					min="10"
-					,
 					max="55"
-					,
 					value="45"
-					,
 					name="temperatureSlider"
-					,
 					id="tempRange"
 				/>
 				<label id="tempLabel"></label><br />
+				<p><b>Regulator:</b></p>
+				<label for="probe">Czas próbkowania [s]: </label><br />
+				<input type="number" value="0.1" name="probe" id="probe" /><br />
+				<label for="gain">Wzmocnienie: </label><br />
+				<input type="number" value="0.9" name="gain" id="gain" /><br />
+				<label for="integral">Czas zdwojenia: </label><br />
+				<input type="number" value="50" name="integral" id="integral" />
+				<br /><br />
 				<button type="button" onclick="startSim()">Submit</button>
 			</form>
 		</div>
@@ -56,7 +60,16 @@
 				name="voltBox"
 				id="voltBox"
 				value="Voltage"
-				onchange="toggleDiv('voltGraph')"
+				onchange="toggleDiv('powerGraph')"
+			/>
+			<label for="powerBox">Heater power graph</label><br />
+			<input
+				type="checkbox"
+				checked
+				name="combBox"
+				id="combBox"
+				value="Combined"
+				onchange="toggleDiv('combinedGraph')"
 			/>
 			<label for="powerBox">Heater power graph</label><br />
 			<input
@@ -71,6 +84,7 @@
 		</div>
 		<div class="graphs" id="tempGraph"></div>
 		<div class="graphs" id="powerGraph"></div>
+		<div class="graphs" id="combinedGraph"></div>
 		<div class="graphs" id="flowGraph"></div>
 		<script src="../static/scripts/script.js"></script>
 	</body>
