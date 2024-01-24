@@ -85,8 +85,8 @@ async def main(tempSet: float, timeProbe: float, gain: float, integral: float):
     heaterPower = [0.0]  # Moc grzałki wody
 
     # waterFlow, waterFlowLitres = genOutFlowConst(n)  # Przepływ wody m^3/s
-    # waterFlow, waterFlowLitres = genOutFlowStep2(n)  # Przepływ wody m^3/s
-    waterFlow, waterFlowLitres = genOutFlowStepRand(n)  # Przepływ wody m^3/s
+    waterFlow, waterFlowLitres = genOutFlowStep4(n)  # Przepływ wody m^3/s
+    # waterFlow, waterFlowLitres = genOutFlowStepRand(n)  # Przepływ wody m^3/s
 
     for i in range(n):
         time.append(time[-1] + timeProbe)
