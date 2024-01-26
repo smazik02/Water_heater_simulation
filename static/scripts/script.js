@@ -164,7 +164,7 @@ const genGraphs = (data) => {
 	];
 	layout = {
 		title: {
-			text: 'Heater power',
+			text: 'Combined water temp and heater power',
 			font: {
 				size: 32,
 			},
@@ -194,6 +194,10 @@ const genGraphs = (data) => {
 			tickformat: ',.0f',
 			title: {
 				size: 24,
+			},
+			titlefont: {
+				size: 24,
+				color: 'rgb(0, 0, 0)',
 			},
 			tickfont: {
 				size: 16,

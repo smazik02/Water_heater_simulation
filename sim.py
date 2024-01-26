@@ -8,9 +8,7 @@ CV = 4180  # ciepło właściwe wody, J * 1/kg * 1/K
 RHO = 1000  # gęstość wody 1000 kg/m^3
 
 VOLUME = 1/1000  # Pojemność [m^3]
-# TIME_PROBE = 0.1  # Okres czasu próbkowania [s]
 TOTAL_TIME = 240
-# N = int(TOTAL_TIME/TIME_PROBE) + 1
 
 integer = 0  # Dla skrócenia obliczeń całkowania
 
@@ -43,11 +41,10 @@ def genOutFlowStep4(n: int) -> (list[float], list[float]):
         [0.0001 for _ in range(3*n//4+1, n)]
     return (outFlow, [x*60000 for x in outFlow])
 
-# Wersja ze stopniem:
-
-
+# Wersja losowa:
 def genOutFlowStepRand(n: int) -> (list[float], list[float]):
-    rand1, rand2, rand3, rand4 = randrange(1,13)/2, randrange(1,13)/2, randrange(1,13)/2, randrange(1,13)/2
+    rand1, rand2, rand3, rand4 = randrange(
+        1, 13)/2, randrange(1, 13)/2, randrange(1, 13)/2, randrange(1, 13)/2
     outFlow = [rand1/60000 for _ in range(n//4+1)] + \
         [rand2/60000 for _ in range(n//4+1, n//2+1)] + \
         [rand3/60000 for _ in range(n//2+1, 3*n//4+1)] + \
@@ -55,22 +52,10 @@ def genOutFlowStepRand(n: int) -> (list[float], list[float]):
     return (outFlow, [x*60000 for x in outFlow])
 
 
-def P(en: float, kp: float) -> float:
-    return kp*en
-
-
 def PI(en: float, kp: float, ti: float, timeProbe: float) -> float:
     global integer
     integer += en
     return kp * (en + (timeProbe*integer)/(ti))
-
-
-# def PID(en, kp, ti, td):
-#     global integer
-#     integer += en
-#     if len(volt) < 2:
-#         return kp * (en + (TIME_PROBE)/(ti) * integer + (td)/(TIME_PROBE) * volt[-1])
-#     return kp * (en + (TIME_PROBE)/(ti) * integer + (td)/(TIME_PROBE) * (volt[-1] - volt[-2]))
 
 
 async def main(tempSet: float, timeProbe: float, gain: float, integral: float):
@@ -91,7 +76,6 @@ async def main(tempSet: float, timeProbe: float, gain: float, integral: float):
     for i in range(n):
         time.append(time[-1] + timeProbe)
         e.append(tempSet - temp[-1])
-        # volt.append(min(VOLT_MAX, max(VOLT_MIN, P(e[-1], KP))))
         volt.append(
             min(VOLT_MAX, max(VOLT_MIN, PI(e[-1], gain, integral, timeProbe))))
         heaterPower.append(
