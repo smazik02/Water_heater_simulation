@@ -13,43 +13,46 @@ TOTAL_TIME = 240
 integer = 0  # Dla skrócenia obliczeń całkowania
 
 
-def genOutFlowConst(n: int) -> (list[float], list[float]):  # Wersja stała:
+# Wersja stała:
+def genOutFlowConst(n: int) -> tuple[list[float], list[float]]:
     outFlow = [0.0000333333 for _ in range(n)]
-    return (outFlow, [x*60000 for x in outFlow])
+    return outFlow, [x*60000 for x in outFlow]
 
 
 # Wersja ze stopniem:
-def genOutFlowStep2(n: int) -> (list[float], list[float]):
+def genOutFlowStep2(n: int) -> tuple[list[float], list[float]]:
     outFlow = [0.0000333333 for _ in range(n//2+1)] + \
         [0.0001 for _ in range(n//2+1, n)]
-    return (outFlow, [x*60000 for x in outFlow])
+    return outFlow, [x*60000 for x in outFlow]
 
 
 # Wersja ze stopniem:
-def genOutFlowStep3(n: int) -> (list[float], list[float]):
+def genOutFlowStep3(n: int) -> tuple[list[float], list[float]]:
     outFlow = [0.0000333333 for _ in range(n//3+1)] + \
         [0.0001 for _ in range(n//3+1, 2*n//3+1)] + \
         [0.0000333333 for _ in range(2*n//3+1, n)]
-    return (outFlow, [x*60000 for x in outFlow])
+    return outFlow, [x*60000 for x in outFlow]
 
 
 # Wersja ze stopniem:
-def genOutFlowStep4(n: int) -> (list[float], list[float]):
+def genOutFlowStep4(n: int) -> tuple[list[float], list[float]]:
     outFlow = [0.0000333333 for _ in range(n//4+1)] + \
         [0.0001 for _ in range(n//4+1, n//2+1)] + \
         [0.0000333333 for _ in range(n//2+1, 3*n//4+1)] + \
         [0.0001 for _ in range(3*n//4+1, n)]
-    return (outFlow, [x*60000 for x in outFlow])
+    return outFlow, [x*60000 for x in outFlow]
 
 # Wersja losowa:
-def genOutFlowStepRand(n: int) -> (list[float], list[float]):
+
+
+def genOutFlowStepRand(n: int) -> tuple[list[float], list[float]]:
     rand1, rand2, rand3, rand4 = randrange(
         1, 13)/2, randrange(1, 13)/2, randrange(1, 13)/2, randrange(1, 13)/2
     outFlow = [rand1/60000 for _ in range(n//4+1)] + \
         [rand2/60000 for _ in range(n//4+1, n//2+1)] + \
         [rand3/60000 for _ in range(n//2+1, 3*n//4+1)] + \
         [rand4/60000 for _ in range(3*n//4+1, n)]
-    return (outFlow, [x*60000 for x in outFlow])
+    return outFlow, [x*60000 for x in outFlow]
 
 
 def PI(en: float, kp: float, ti: float, timeProbe: float) -> float:
