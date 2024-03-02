@@ -43,8 +43,6 @@ def genOutFlowStep4(n: int) -> tuple[list[float], list[float]]:
     return outFlow, [x*60000 for x in outFlow]
 
 # Wersja losowa:
-
-
 def genOutFlowStepRand(n: int) -> tuple[list[float], list[float]]:
     rand1, rand2, rand3, rand4 = randrange(
         1, 13)/2, randrange(1, 13)/2, randrange(1, 13)/2, randrange(1, 13)/2
